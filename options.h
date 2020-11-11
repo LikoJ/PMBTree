@@ -6,8 +6,8 @@ namespace pmbtree {
 
 class Options {
 public:
-    Options();
-    ~Options();
+    Options() {}
+    ~Options() {}
 
     std::string pm_path = "/mnt/persist-memory/pmem_fs_lhd/";
 
