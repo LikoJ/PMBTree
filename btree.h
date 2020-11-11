@@ -27,7 +27,7 @@ class Iterator;
 class BTree {
     friend class Iterator;
 public:
-    explicit BTtree(Options& opt);
+    explicit BTree(Options& opt);
     ~BTree();
 
     bool Write(const std::string key, const std::string value);

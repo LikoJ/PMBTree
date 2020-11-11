@@ -14,12 +14,12 @@ BTree::BTree(Options& opt) : arena_(opt.pm_path + opt.index_name + ".pool", opt.
         // Recover
         arena_.Recover(ifs);
         ifs >> root_;
-        root_tmp_ = (Node*)Arena.Translate(root_);
+        root_tmp_ = (Node*)arena_.Translate(root_);
         ifs.close();
     }
 }
 
-BTree::~Btree() {
+BTree::~BTree() {
     std::ofstream ofs(manifest_);
     arena_.Save(ofs);
     ofs << root_ << std::endl;
