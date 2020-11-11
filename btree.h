@@ -3,7 +3,6 @@
 
 #include "arena.h"
 #include "options.h"
-#include "global.h"
 #include <string>
 #include <stdint.h>
 #include <iostream>
@@ -11,7 +10,7 @@
 
 namespace pmbtree {
 
-//static const int min_degree = 20;    // min_degree of a node except root, min_degree - 1 <= keynum <= 2 * min_degree - 1, min_degree <= childnum <= 2 * min_degree
+static const int min_degree = 20;    // min_degree of a node except root, min_degree - 1 <= keynum <= 2 * min_degree - 1, min_degree <= childnum <= 2 * min_degree
 
 struct Node {
     bool is_leaf;
@@ -28,7 +27,7 @@ class Iterator;
 class BTree {
     friend class Iterator;
 public:
-    explicit BTtree(std::string name);
+    explicit BTtree(Options& opt);
     ~BTree();
 
     bool Write(const std::string key, const std::string value);
