@@ -2,17 +2,24 @@
 #define PMBTREE_BTREE_H
 
 #include "arena.h"
+#include "options.h"
 #include <string>
 #include <stdint.h>
+#include <iostream>
+#include <fstream>
 
 namespace pmbtree {
-static const int t = 20;    // node except root, t - 1 <= keynum <= 2t - 1, t <= child <= 2t
+
+static const int min_degree = 20;    // min_degree of a node except root, min_degree - 1 <= keynum <= 2 * min_degree - 1, min_degree <= childnum <= 2 * min_degree
+
 struct Node {
-    int64_t key[2t];
-    size_t key_len[2t];
-    int64_t value[2t];
-    size_t value_len[2t];
-    Node *child[2t + 1];
+    bool is_leaf;
+    int keynum;
+    int64_t key[2 * min_degree];
+    size_t key_len[2 * min_degree];
+    int64_t value[2 * min_degree];
+    size_t value_len[2 * min_degree];
+    int64_t child[2 * min_degree + 1];
 };
 
 class Iterator;
@@ -20,7 +27,7 @@ class Iterator;
 class BTree {
     friend class Iterator;
 public:
-    explicit BTtree();
+    explicit BTtree(std::string name);
     ~BTree();
 
     bool Write(const std::string key, const std::string value);
@@ -29,10 +36,11 @@ public:
 
     Iterator* NewIterator();
 private:
-    Node* FindGreaterOrEqual(const std::string key, Node* father);
-
+    
     Arena arena_;
-    Node *root_;
+    int64_t root_;
+    Node* root_tmp_;
+    std::string manifest_;
 };
 
 class Iterator {
@@ -50,5 +58,5 @@ private:
     Node* node_;
 };
 
-} // bmptree
+} // pmbtree
 #endif // PMBTREE_BTREE_H

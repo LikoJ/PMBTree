@@ -18,7 +18,7 @@ namespace pmbtree {
 
 class Arena {
 public:
-    Arena();
+    Arena(std::string path, size_t pmem_len);
     ~Arena();
     void Sync(void *start, size_t len);
     void* Allocate(size_t bytes, int64_t &offset);

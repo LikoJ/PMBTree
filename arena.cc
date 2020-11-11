@@ -1,10 +1,8 @@
 #include "arena.h"
 
 namespace pmbtree {
-    static const size_t pmem_len = 80L * 1024 * 1024 * 1024;
-    static const std::string path = "/mnt/persist-memory/pmem_fs_lhd/test.pool";
 
-Arena::Arena(): used(0) {
+Arena::Arena(std::string path, size_t pmem_len): used(0) {
     if ((pmemaddr = pmem_map_file(path.c_str(), pmem_len, PMEM_FILE_CREATE,
                                   0666, &mapped_len, &is_pmem)) == NULL) {
         perror("pmem_map_file");
