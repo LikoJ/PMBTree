@@ -40,8 +40,77 @@ Node* BTree::NewNode(int64_t &offset) {
     return x;
 }
 
+// father->child[pos] is lchild
+void BTree::SplitNode(Node *father, int pos, Node *lchild) {
+    // split lchild to lchild and rchild with mid key in lchild, and insert the mid key to their father 
+    int64_t rchild_offset;
+    Node *rchild = NewNode(rchild_offset);
+
+    rchild->is_leaf = lchild->is_leaf;
+    rchild->keynum = min_degree - 1;
+
+    for (int i = 0; i < rchild->keynum; i++) {
+        rchild->key[i] = lchild->key[i + min_degree];
+        rchild->key_len[i] = lchild->key_len[i + min_degree];
+    }
+
+    if (!rchild->is_leaf) {
+        for (int i = 0; i < rchild->keynum + 1; i++) {
+            rchild->child[i] = lchild->child[i + min_degree];
+        }
+    }
+
+    lchild->keynum = min_degree - 1;
+
+    for (int i = father->keynum; i > pos; i--) {
+        father->child[i + 1] = father->child[i];
+    }
+    father->child[pos + 1] = rchild_offset;
+
+    for (int i = father->keynum - 1; i >= pos; i--) {
+        father->key[i + 1] = father->key[i];
+    }
+    father->key[pos] = lchild->k[min_degree - 1];
+
+    father->keynum++;
+}
+
+int BTree::Compare(int64_t k1, size_t kl1, int64_t k2, size_t kl2) {
+    std::string str1((char*)arena_.Translate(k1), kl1);
+    std::string str2((char*)arena_.Translate(k2), kl2);
+    if(str1 == str2) {
+        return 0;
+    } else if (str1 < str2) {
+        return -1;
+    } else {
+        return 1;
+    }
+}
+
+// equal -> update in place!
+void BTree::InsertNode(Node* n, int64_t k, size_t kl, int64_t v, size_t vl) {
+    if (n->is_leaf) {
+        int pos = node->num;
+        while (pos >= 1 && (Compare(k, kl, n->key[pos - 1], n->key_len[pos - 1]) == -1)) {
+            n->key[pos] = n->key[pos - 1];
+            n->key_len[pos] = n->key[pos - 1];
+            pos--;
+        }
+    }
+    if ()
+}
+
 bool BTree::Write(const std::string key, const std::string value) {
-    return false;
+    if (root_tmp_->keynum == 2 * min_degree - 1) {
+        // root is full
+        int64_t n_offset;
+        Node *n = NewNode(n_offset);
+        n->is_leaf = false;
+        n->child[0] = root_;
+
+    } else {
+
+    }
 }
 
 bool BTree::Read(const std::string key, std::string *value) {

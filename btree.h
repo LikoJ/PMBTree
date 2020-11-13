@@ -38,6 +38,10 @@ public:
 private:
     
     Node* NewNode(int64_t &offset);
+    void SplitNode(Node* father, int pos, Node* son);
+    void InsertNode(Node* n, int64_t k, size_t kl, int64_t v, size_t vl);
+    int Compare(int64_t k1, size_t kl1, int64_t k2, size_t kl2);
+
     Arena arena_;
     int64_t root_;
     Node* root_tmp_;
