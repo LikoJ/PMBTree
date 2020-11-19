@@ -90,26 +90,80 @@ int BTree::Compare(int64_t k1, size_t kl1, int64_t k2, size_t kl2) {
 // equal -> update in place!
 void BTree::InsertNode(Node* n, int64_t k, size_t kl, int64_t v, size_t vl) {
     if (n->is_leaf) {
-        int pos = node->num;
-        while (pos >= 1 && (Compare(k, kl, n->key[pos - 1], n->key_len[pos - 1]) == -1)) {
-            n->key[pos] = n->key[pos - 1];
-            n->key_len[pos] = n->key[pos - 1];
+        // node is a leaf, insert directly
+        int pos = node->num - 1;
+        while (pos >= 0 && (Compare(k, kl, n->key[pos], n->key_len[pos]) == -1)) {
             pos--;
         }
+
+        if (pos >= 0 && Compare(k, kl, n->key[pos], n->key_len[pos]) == 0) {
+            // update
+            n->value[pos] = v;
+            n->value_len[pos] = vl;
+        } else {
+            // insert
+            int tmp = node->num;
+            while (tmp > pos + 1) {
+                n->key[tmp] = n->key[tmp - 1];
+                n->key_len[tmp] = n->key[tmp - 1];
+                n->value[tmp] = n->value[tmp - 1];
+                n->value_len[tmp] = n->value_len[tmp - 1];
+                tmp--;
+            }
+            n->key[pos + 1] = k;
+            n->key_len[pos + 1] = kl;
+            n->value[pos + 1] = v;
+            n->value_len[pos + 1] = vl;
+        }
+    } else {
+        int pos = node->num - 1;
+        while (pos >= 0 && (Compare(k, kl, n->key[pos], n->key_len[pos]) == -1)) {
+            pos--;
+        }
+
+        if (pos >= 0 && (Compare(k, kl, n->key[pos], n->key_len[pos]) == 0)) {
+            // update
+            n->value[pos] = v;
+            n->value_len[pos] = vl;
+        } else {
+            // insert
+            if (n->child[pos + 1]->keynum == 2 * min_degree - 1) {
+                SplitNode(n, pos + 1, n->child[pos + 1]);
+                if (Compare(k, kl, n->key[pos + 1], n->key_len[pos + 1]) == 1) {
+                    pos++;
+                }
+            }
+
+            InsertNode(n->child[pos + 1], k, kl, v, vl);
+        }
     }
-    if ()
 }
 
 bool BTree::Write(const std::string key, const std::string value) {
+    // store key and value with pmdk pool
+    int64_t k, v;
+    size_t kl = key.length();
+    size_t vl = value.length();
+
+    char *pmdk_key = (char *)arena_.Allocate(kl, k);
+    memcpy(pmdk_key, key.data(), kl);
+    
+    char *pmdk_value = (char *)arena_.Allocate(vl, v);
+    memcpy(pmdk_key, value.data(), vl);
+
     if (root_tmp_->keynum == 2 * min_degree - 1) {
         // root is full
         int64_t n_offset;
         Node *n = NewNode(n_offset);
         n->is_leaf = false;
         n->child[0] = root_;
+        SplitNode(n, 0, root_tmp_);
+        InsertNode(n, k, kl, v, vl);
+        root_ = n_offset;
+        root_tmp_ = n;
 
     } else {
-
+        InsertNode(root_tmp_, k, kl, v, vl);
     }
 }
 
