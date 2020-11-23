@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include <iostream>
 #include <fstream>
+#include <assert.h>
 
 namespace pmbtree {
 
@@ -41,6 +42,7 @@ private:
     void SplitNode(Node* father, int pos, Node* son);
     void InsertNode(Node* n, int64_t k, size_t kl, int64_t v, size_t vl);
     int Compare(int64_t k1, size_t kl1, int64_t k2, size_t kl2);
+    int Compare(int64_t k1, size_t kl1, std::string str2);
 
     Arena arena_;
     int64_t root_;

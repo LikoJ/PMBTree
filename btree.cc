@@ -167,7 +167,37 @@ bool BTree::Write(const std::string key, const std::string value) {
     }
 }
 
+int BTree::Compare(int64_t k1, size_t kl1, std::string str2) {
+    std::string str1((char*)arena_.Translate(k1), kl1);
+    if(str1 == str2) {
+        return 0;
+    } else if (str1 < str2) {
+        return -1;
+    } else {
+        return 1;
+    }
+}
+
 bool BTree::Read(const std::string key, std::string *value) {
+    assert(root_tmp_ != NULL);
+    Node *n = root_tmp_;
+    while (true) {
+        int i;
+        for (i = 0; i < n->keynum; i++) {
+            int result = Compare(n->key[i], n->key_len[i], key);
+            if (result == 0) {
+                *value = std::string((char*)arena_.Translate(n->key[i]), n->key_len[i]);
+                return true;
+            } else if (result == 1) {
+                break;
+            }
+        }
+        if (n->is_leaf) {
+            return false;
+        } else {
+            n = n->child[i];
+        }
+    }
     return false;
 }
 
