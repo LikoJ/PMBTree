@@ -70,7 +70,7 @@ void BTree::SplitNode(Node *father, int pos, Node *lchild) {
     for (int i = father->keynum - 1; i >= pos; i--) {
         father->key[i + 1] = father->key[i];
     }
-    father->key[pos] = lchild->k[min_degree - 1];
+    father->key[pos] = lchild->key[min_degree - 1];
 
     father->keynum++;
 }
@@ -91,7 +91,7 @@ int BTree::Compare(int64_t k1, size_t kl1, int64_t k2, size_t kl2) {
 void BTree::InsertNode(Node* n, int64_t k, size_t kl, int64_t v, size_t vl) {
     if (n->is_leaf) {
         // node is a leaf, insert directly
-        int pos = node->num - 1;
+        int pos = n->keynum - 1;
         while (pos >= 0 && (Compare(k, kl, n->key[pos], n->key_len[pos]) == -1)) {
             pos--;
         }
@@ -116,7 +116,7 @@ void BTree::InsertNode(Node* n, int64_t k, size_t kl, int64_t v, size_t vl) {
             n->value_len[pos + 1] = vl;
         }
     } else {
-        int pos = node->num - 1;
+        int pos = n->keynum - 1;
         while (pos >= 0 && (Compare(k, kl, n->key[pos], n->key_len[pos]) == -1)) {
             pos--;
         }
@@ -127,14 +127,15 @@ void BTree::InsertNode(Node* n, int64_t k, size_t kl, int64_t v, size_t vl) {
             n->value_len[pos] = vl;
         } else {
             // insert
-            if (n->child[pos + 1]->keynum == 2 * min_degree - 1) {
-                SplitNode(n, pos + 1, n->child[pos + 1]);
+            Node *c = (Node*)arena_.Translate(n->child[pos + 1]);
+            if (c->keynum == 2 * min_degree - 1) {
+                SplitNode(n, pos + 1, c);
                 if (Compare(k, kl, n->key[pos + 1], n->key_len[pos + 1]) == 1) {
                     pos++;
                 }
             }
 
-            InsertNode(n->child[pos + 1], k, kl, v, vl);
+            InsertNode(c, k, kl, v, vl);
         }
     }
 }
