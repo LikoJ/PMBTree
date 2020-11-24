@@ -11,7 +11,7 @@ public:
 
     std::string pm_path = "/mnt/persist-memory/pmem_fs_lhd/";
 
-    std::string index_name = "test";
+    std::string index_name = "btree";
 
     size_t pmem_len = 80L * 1024 * 1024 * 1024; // pmdk pool size
 };
