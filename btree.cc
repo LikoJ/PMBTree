@@ -102,7 +102,7 @@ void BTree::InsertNode(Node* n, int64_t k, size_t kl, int64_t v, size_t vl) {
             n->value_len[pos] = vl;
         } else {
             // insert
-            int tmp = node->num;
+            int tmp = n->keynum;
             while (tmp > pos + 1) {
                 n->key[tmp] = n->key[tmp - 1];
                 n->key_len[tmp] = n->key[tmp - 1];
@@ -196,7 +196,7 @@ bool BTree::Read(const std::string key, std::string *value) {
         if (n->is_leaf) {
             return false;
         } else {
-            n = n->child[i];
+            n = (Node*)arena_.Translate(n->child[i]);
         }
     }
     return false;
