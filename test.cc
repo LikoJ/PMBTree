@@ -3,7 +3,7 @@
 #include "btree.h"
 int main() {
     pmbtree::Options opt;
-    pmbtree::BTree bt(opt);
+    pmbtree::BTree *bt = new pmbtree::BTree(opt);
     std::string key, value;
 
     std::cout << "--------Insert--------" << std::endl;
@@ -108,6 +108,6 @@ int main() {
             std::cout << key << ": not found!" << std::endl;
         }
     }*/
-    delete l;
+    delete bt;
     return 0;
 }
