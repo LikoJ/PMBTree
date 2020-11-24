@@ -150,7 +150,7 @@ bool BTree::Write(const std::string key, const std::string value) {
     memcpy(pmdk_key, key.data(), kl);
     
     char *pmdk_value = (char *)arena_.Allocate(vl, v);
-    memcpy(pmdk_key, value.data(), vl);
+    memcpy(pmdk_value, value.data(), vl);
 
     if (root_tmp_->keynum == 2 * min_degree - 1) {
         // root is full
