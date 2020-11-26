@@ -15,6 +15,19 @@ int main() {
         bt->Write(key, value);
         std::cout << key << ": " << value << std::endl;
     }
+
+    std::cout << "---------Read---------" << std::endl;
+    for (int i = 0; i < 10; i++, i++) {
+        key = "k";
+        key += std::to_string(i);
+        if (bt->Read(key, &value)) {
+            std::cout << key << ": " << value << std::endl;
+        } else {
+            std::cout << key << ": not found!" << std::endl;
+        }
+    }
+
+    std::cout << "--------Insert--------" << std::endl;
     for (int i = 1; i < 10; i++, i++) {
         key = "k";
         key += std::to_string(i);

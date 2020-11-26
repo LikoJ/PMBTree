@@ -105,7 +105,7 @@ void BTree::InsertNode(Node* n, int64_t k, size_t kl, int64_t v, size_t vl) {
             int tmp = n->keynum;
             while (tmp > pos + 1) {
                 n->key[tmp] = n->key[tmp - 1];
-                n->key_len[tmp] = n->key[tmp - 1];
+                n->key_len[tmp] = n->key_len[tmp - 1];
                 n->value[tmp] = n->value[tmp - 1];
                 n->value_len[tmp] = n->value_len[tmp - 1];
                 tmp--;
@@ -114,6 +114,7 @@ void BTree::InsertNode(Node* n, int64_t k, size_t kl, int64_t v, size_t vl) {
             n->key_len[pos + 1] = kl;
             n->value[pos + 1] = v;
             n->value_len[pos + 1] = vl;
+            n->keynum++;
         }
     } else {
         int pos = n->keynum - 1;
@@ -187,7 +188,7 @@ bool BTree::Read(const std::string key, std::string *value) {
         for (i = 0; i < n->keynum; i++) {
             int result = Compare(n->key[i], n->key_len[i], key);
             if (result == 0) {
-                *value = std::string((char*)arena_.Translate(n->key[i]), n->key_len[i]);
+                *value = std::string((char*)arena_.Translate(n->value[i]), n->value_len[i]);
                 return true;
             } else if (result == 1) {
                 break;
