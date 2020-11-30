@@ -76,6 +76,9 @@ void BTree::SplitNode(Node *father, int pos, Node *lchild) {
         father->value_len[i + 1] = father->value_len[i];
     }
     father->key[pos] = lchild->key[min_degree - 1];
+    father->key_len[pos] = lchild->key_len[min_degree - 1];
+    father->value[pos] = lchild->value[min_degree - 1];
+    father->value_len[pos] = lchild->value_len[min_degree - 1];
 
     father->keynum++;
 }
