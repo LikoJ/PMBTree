@@ -52,6 +52,8 @@ void BTree::SplitNode(Node *father, int pos, Node *lchild) {
     for (int i = 0; i < rchild->keynum; i++) {
         rchild->key[i] = lchild->key[i + min_degree];
         rchild->key_len[i] = lchild->key_len[i + min_degree];
+        rchild->value[i] = lchild->value[i + min_degree];
+        rchild->value_len[i] = lchild->value_len[i + min_degree];
     }
 
     if (!rchild->is_leaf) {
@@ -69,6 +71,9 @@ void BTree::SplitNode(Node *father, int pos, Node *lchild) {
 
     for (int i = father->keynum - 1; i >= pos; i--) {
         father->key[i + 1] = father->key[i];
+        father->key_len[i + 1] = father->key_len[i];
+        father->value[i + 1] = father->value[i];
+        father->value_len[i + 1] = father->value_len[i];
     }
     father->key[pos] = lchild->key[min_degree - 1];
 
