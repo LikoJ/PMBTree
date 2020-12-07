@@ -8,6 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include <assert.h>
+#include <stack>
 
 namespace pmbtree {
 
@@ -21,6 +22,8 @@ struct Node {
     int64_t value[2 * min_degree];
     size_t value_len[2 * min_degree];
     int64_t child[2 * min_degree + 1];
+    int64_t father;
+    int pos;
 };
 
 class Iterator;
@@ -35,7 +38,7 @@ public:
     bool Read(const std::string key, std::string* value);
     bool Delete(const std::string key);
 
-    //Iterator* NewIterator();
+    Iterator* NewIterator();
 private:
     
     Node* NewNode(int64_t &offset);
@@ -50,9 +53,9 @@ private:
     std::string manifest_;
 };
 
-/*class Iterator {
+class Iterator {
 public:
-    explicit Iterator(Skiplist* list);
+    explicit Iterator(BTree* bt);
     ~Iterator();
     bool Valid();
     void Next();
@@ -61,9 +64,10 @@ public:
     void Seek(const std::string key);
     void SeekToFirst();
 private:
-    BTree* tree;
-    Node* node_;
-};*/
+    BTree* tree_;
+    std::stack<Node*> node_stack_;
+    std::stack<int> pos_stack_;
+};
 
 } // pmbtree
 #endif // PMBTREE_BTREE_H

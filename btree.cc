@@ -167,14 +167,14 @@ bool BTree::Write(const std::string key, const std::string value) {
         Node *n = NewNode(n_offset);
         n->is_leaf = false;
         n->child[0] = root_;
+
         SplitNode(n, 0, root_tmp_);
-        InsertNode(n, k, kl, v, vl);
         root_ = n_offset;
         root_tmp_ = n;
-
-    } else {
-        InsertNode(root_tmp_, k, kl, v, vl);
+       
     }
+    InsertNode(root_tmp_, k, kl, v, vl);
+    return true;
 }
 
 int BTree::Compare(int64_t k1, size_t kl1, std::string str2) {
@@ -215,7 +215,100 @@ bool BTree::Delete(const std::string key) {
     return false;
 }
 
-/*Iterator* BTree::NewIterator() {
-    return NULL;
-}*/
+Iterator* BTree::NewIterator() {
+    return new Iterator(this);
+}
+
+Iterator::Iterator(BTree *bt): tree_(bt) {}
+
+Iterator::~Iterator() {}
+
+bool Iterator::Valid() {
+    return !node_stack_.empty() && !pos_stack_.empty();
+}
+
+void Iterator::Next() {
+    assert(Valid());
+    int pos = pos_stack_.pop();
+    Node* n = node_stack_.top();
+    if (pos < n->keynum - 1) {
+        pos++;
+        pos_stack_.push(pos);
+        if (!n->is_leaf) {
+            Node *tmp = (Node*)tree_->arena_.Translate(n->child[pos]);
+            while (!tmp->is_leaf) {
+                node_stack_.push(tmp);
+                pos_stack_.push(0);
+                tmp = (Node*)tree_->arena_.Translate(tmp->child[0]);
+            }
+        }
+    } else {
+        node_stack_.pop();
+    }
+}
+
+std::string Iterator::Key() {
+    assert(Valid());
+    int pos = pos_stack_.top();
+    Node* n = node_stack_.top();
+    std::string key((char*)tree_->arena_.Translate(n->key[pos]), n->key_len[pos]);
+    return key;
+}
+
+std::string Iterator::Value() {
+    assert(Valid());
+    int pos = pos_stack_.top();
+    Node* n = node_stack_.top();
+    std::string value((char*)tree_->arena_.Translate(n->value[pos]), n->value_len[pos]);
+    return value;
+}
+
+void Iterator::Seek(const std::string key) {
+    assert(tree_ != NULL);
+    std::stack<Node*>().swap(node_stack_);
+    std::stack<int>().swap(pos_stack_);
+
+    Node* n = tree_->root_tmp_;
+    while (true) {
+        int i;
+        for (i = 0; i < n->keynum; i++) {
+            int result = Compare(n->key[i], n->key_len[i], key);
+            if (result == 0) {
+                node_stack_.push(n);
+                pos_stack_.push(i);
+                return;
+            } else if (result == 1) {
+                node_stack_.push(n);
+                pos_stack_.push(i);
+                break;
+            }
+        }
+        if (n->is_leaf) {
+            break;
+        } else {
+            n = (Node*)arena_.Translate(n->child[i]);
+        }
+    }
+}
+
+void Iterator::SeekToFirst() {
+    assert(tree_ != NULL);
+    std::stack<Node*>().swap(node_stack_);
+    std::stack<int>().swap(pos_stack_);
+
+    Node* n = tree_->root_tmp_;
+    while(true) {
+        if (n->keynum > 0) {
+            pos_stack_.push(0);
+            node_stack_.push(n);
+        }
+
+        if (n->is_leaf) {
+            break;
+        } else {
+            n = (Node*)tree_->arena_.Translate(n->child[0]);
+        }
+    }
+}
+
 } //pmbtree
