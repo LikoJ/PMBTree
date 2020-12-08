@@ -229,7 +229,8 @@ bool Iterator::Valid() {
 
 void Iterator::Next() {
     assert(Valid());
-    int pos = pos_stack_.pop();
+    int pos = pos_stack_.top();
+    pos_stack_.pop();
     Node* n = node_stack_.top();
     if (pos < n->keynum - 1) {
         pos++;
