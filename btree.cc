@@ -236,10 +236,15 @@ void Iterator::Next() {
         pos_stack_.push(pos);
         if (!n->is_leaf) {
             Node *tmp = (Node*)tree_->arena_.Translate(n->child[pos]);
-            while (!tmp->is_leaf) {
+            while (true) {
                 node_stack_.push(tmp);
                 pos_stack_.push(0);
-                tmp = (Node*)tree_->arena_.Translate(tmp->child[0]);
+                
+                if (!tmp->is_leaf) {
+                    tmp = (Node*)tree_->arena_.Translate(tmp->child[0]);
+                } else {
+                    break;
+                }
             }
         }
     } else {
@@ -272,7 +277,7 @@ void Iterator::Seek(const std::string key) {
     while (true) {
         int i;
         for (i = 0; i < n->keynum; i++) {
-            int result = Compare(n->key[i], n->key_len[i], key);
+            int result = tree_->Compare(n->key[i], n->key_len[i], key);
             if (result == 0) {
                 node_stack_.push(n);
                 pos_stack_.push(i);
@@ -286,7 +291,7 @@ void Iterator::Seek(const std::string key) {
         if (n->is_leaf) {
             break;
         } else {
-            n = (Node*)arena_.Translate(n->child[i]);
+            n = (Node*)tree_->arena_.Translate(n->child[i]);
         }
     }
 }
