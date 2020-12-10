@@ -1,13 +1,14 @@
 #include <iostream>
 #include <string>
 #include "btree.h"
+#define KEY_NUM 200
 int main() {
     pmbtree::Options opt;
     pmbtree::BTree *bt = new pmbtree::BTree(opt);
     std::string key, value;
 
     std::cout << "--------Insert--------" << std::endl;
-    for (int i = 0; i < 10; i++, i++) {
+    for (int i = 0; i < KEY_NUM; i++, i++) {
         key = "k";
         key += std::to_string(i);
         value = "v";
@@ -17,7 +18,7 @@ int main() {
     }
 
     std::cout << "---------Read---------" << std::endl;
-    for (int i = 0; i < 10; i++, i++) {
+    for (int i = 0; i < KEY_NUM; i++, i++) {
         key = "k";
         key += std::to_string(i);
         if (bt->Read(key, &value)) {
@@ -28,7 +29,7 @@ int main() {
     }
 
     std::cout << "--------Insert--------" << std::endl;
-    for (int i = 1; i < 10; i++, i++) {
+    for (int i = 1; i < KEY_NUM; i++, i++) {
         key = "k";
         key += std::to_string(i);
         value = "v";
@@ -38,7 +39,7 @@ int main() {
     }
 
     std::cout << "---------Read---------" << std::endl;
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < KEY_NUM; i++) {
         key = "k";
         key += std::to_string(i);
         if (bt->Read(key, &value)) {
@@ -57,7 +58,7 @@ int main() {
     }
 
     std::cout << "--------Update--------" << std::endl;
-    for (int i = 0; i < 10; i += 3) {
+    for (int i = 0; i < KEY_NUM; i += 3) {
         key = "k";
         key += std::to_string(i);
         value = "u";
@@ -67,7 +68,7 @@ int main() {
     }
     
     std::cout << "---------Read---------" << std::endl;
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < KEY_NUM; i++) {
         key = "k";
         key += std::to_string(i);
         if (bt->Read(key, &value)) {
@@ -77,20 +78,21 @@ int main() {
         }
     }
 
-    /*
-    std::cout << "--Scan-from-k4-to-k9--" << std::endl;
+    
+    std::cout << "-Scan-from-k20-to-k50-" << std::endl;
     pmskiplist::Iterator *it = l->NewIterator();
     key = "k";
-    key += std::to_string(4);
+    key += std::to_string(20);
     for (it->Seek(key); it->Valid(); it->Next()) {
         key = it->Key();
         value = it->Value();
-        if (key > "k9") {
+        if (key > "k50") {
             break;
         }
         std::cout << key << ": " << value << std::endl;
     }
 
+    /*
     std::cout << "-Delete-from-k0-to-k5-" << std::endl;
     for (int i = 0; i < 6; i++) {
         key = "k";

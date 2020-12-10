@@ -12,7 +12,7 @@
 
 namespace pmbtree {
 
-static const int min_degree = 20;    // min_degree of a node except root, min_degree - 1 <= keynum <= 2 * min_degree - 1, min_degree <= childnum <= 2 * min_degree
+static const int min_degree = 2;    // min_degree of a node except root, min_degree - 1 <= keynum <= 2 * min_degree - 1, min_degree <= childnum <= 2 * min_degree
 
 struct Node {
     bool is_leaf;
