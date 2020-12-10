@@ -80,7 +80,7 @@ int main() {
 
     
     std::cout << "-Scan-from-k20-to-k50-" << std::endl;
-    pmskiplist::Iterator *it = l->NewIterator();
+    pmbtree::Iterator *it = bt->NewIterator();
     key = "k";
     key += std::to_string(20);
     for (it->Seek(key); it->Valid(); it->Next()) {
