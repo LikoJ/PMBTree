@@ -254,6 +254,11 @@ void Iterator::Next() {
         }
     } else {
         node_stack_.pop();
+        if (!n->is_leaf) {
+            Node *tmp = (Node*)tree_->arena_.Translate(n->child[pos + 1]);
+            node_stack_.push(tmp);
+            pos_stack_.push(0);
+        }
     }
 }
 
