@@ -139,7 +139,7 @@ void BTree::InsertNode(Node* n, int64_t k, size_t kl, int64_t v, size_t vl) {
             Node *c = (Node*)arena_.Translate(n->child[pos + 1]);
             if (c->keynum == 2 * min_degree - 1) {
                 SplitNode(n, pos + 1, c);
-                int resut = Compare(k, kl, n->key[pos + 1], n->key_len[pos + 1])
+                int resut = Compare(k, kl, n->key[pos + 1], n->key_len[pos + 1]);
                 if (resut == 1) {
                     pos++;
                     c = (Node*)arena_.Translate(n->child[pos + 1]);
