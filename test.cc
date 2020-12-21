@@ -92,7 +92,10 @@ int main() {
         std::cout << key << ": " << value << std::endl;
     }
 
-    /*
+    delete it;
+    delete bt;
+
+    /* Delete has not been implemented yet.
     std::cout << "-Delete-from-k0-to-k5-" << std::endl;
     for (int i = 0; i < 6; i++) {
         key = "k";
@@ -107,22 +110,20 @@ int main() {
         key = it->Key();
         value = it->Value();
         std::cout << key << ": " << value << std::endl;
-    }
-    delete it;
-    delete l;
+    }*/
 
     std::cout << "--------Reopen--------" << std::endl;
-    l = new pmskiplist::Skiplist("test");
+    bt = new pmbtree::BTree(opt);
     std::cout << "---------Read---------" << std::endl;
     for (int i = 0; i < 10; i++) {
         key = "k";
         key += std::to_string(i);
-        if (l->Read(key, &value)) {
+        if (bt->Read(key, &value)) {
             std::cout << key << ": " << value << std::endl;
         } else {
             std::cout << key << ": not found!" << std::endl;
         }
-    }*/
+    }
     delete bt;
     return 0;
 }

@@ -215,6 +215,7 @@ bool BTree::Read(const std::string key, std::string *value) {
     return false;
 }
 
+// Delete has not been implemented yet.
 bool BTree::Delete(const std::string key) {
     return false;
 }
