@@ -6,7 +6,7 @@ BTree::BTree(Options& opt) : arena_(opt.pm_path + opt.index_name + ".pool", opt.
                              manifest_(opt.pm_path + opt.index_name + ".fest") {
     std::ifstream ifs(manifest_);
     if (!ifs.is_open()) {
-        // Create new pmskiplist
+        // Create new pmbtree
         if ((root_tmp_ = NewNode(root_)) == NULL) {
             std::cout << "Create BTree failed!" << std::endl;
         }
